@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interview Tool — Marketing</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F9F8F6;
+    --surface: #FFFFFF;
+    --surface-2: #F2F1ED;
+    --border: rgba(0,0,0,0.10);
+    --border-strong: rgba(0,0,0,0.18);
+    --text: #1A1A18;
+    --text-2: #5F5E5A;
+    --text-3: #888780;
+    --accent: #534AB7;
+    --accent-light: #EEEDFE;
+    --accent-mid: #AFA9EC;
+    --success: #1D9E75;
+    --success-light: #E1F5EE;
+    --warn: #BA7517;
+    --warn-light: #FAEEDA;
+    --danger: #A32D2D;
+    --danger-light: #FCEBEB;
+    --r-md: 8px;
+    --r-lg: 12px;
+    --r-xl: 16px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 0.5px solid var(--border);
+    padding: 0 2rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .logo-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .phase-tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--surface-2);
+    padding: 3px;
+    border-radius: var(--r-md);
+    font-size: 13px;
+  }
+
+  .phase-tab {
+    padding: 5px 14px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text-2);
+    font-size: 13px;
+    transition: all 0.15s;
+  }
+
+  .phase-tab.active {
+    background: var(--surface);
+    color: var(--text);
+    font-weight: 500;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  .phase-tab:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--r-xl);
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 1rem;
+  }
+
+  textarea {
+    width: 100%;
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--r-md);
+    padding: 12px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    background: var(--surface-2);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+    line-height: 1.6;
+  }
+
+  textarea:focus {
+    border-color: var(--accent);
+    background: var(--surface);
+  }
+
+  input[type="text"] {
+    width: 100%;
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--r-md);
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--surface-2);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  input[type="text"]:focus {
+    border-color: var(--accent);
+    background: var(--surface);
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--r-md);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.15s;
+  }
+
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--accent);
+    border: 0.5px solid var(--accent);
+    padding: 9px 18px;
+    border-radius: var(--r-md);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s;
+  }
+
+  .btn-secondary:hover { background: var(--accent-light); }
+
+  .output-box {
+    background: var(--surface-2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 1.25rem;
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text);
+    min-height: 80px;
+    white-space: pre-wrap;
+  }
+
+  .output-box.streaming {
+    border-color: var(--accent-mid);
+  }
+
+  .loading-dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: bounce 1s infinite;
+  }
+  .loading-dot:nth-child(2) { animation-delay: 0.15s; }
+  .loading-dot:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes bounce {
+    0%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-5px); }
+  }
+
+  .loader { display: flex; align-items: center; gap: 4px; padding: 4px 0; }
+
+  .competencia-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 10px;
+    margin-top: 1rem;
+  }
+
+  .comp-item {
+    background: var(--surface-2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 12px 14px;
+  }
+
+  .comp-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-2);
+    margin-bottom: 6px;
+  }
+
+  .star-row { display: flex; gap: 4px; }
+
+  .star {
+    width: 26px;
+    height: 26px;
+    border-radius: 4px;
+    border: 0.5px solid var(--border-strong);
+    background: var(--surface);
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-3);
+    transition: all 0.1s;
+  }
+
+  .star.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+
+  .comp-notes {
+    margin-top: 8px;
+    font-size: 12px;
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 8px;
+    background: var(--surface);
+    color: var(--text);
+    width: 100%;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    height: 56px;
+  }
+
+  .comp-notes:focus { border-color: var(--accent); }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 20px;
+  }
+
+  .badge-purple { background: var(--accent-light); color: var(--accent); }
+  .badge-green { background: var(--success-light); color: var(--success); }
+  .badge-warn { background: var(--warn-light); color: var(--warn); }
+  .badge-danger { background: var(--danger-light); color: var(--danger); }
+
+  .row { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
+  .row-center { display: flex; gap: 10px; align-items: center; }
+  .label { font-size: 13px; color: var(--text-2); margin-bottom: 6px; }
+
+  .section-divider {
+    border: none;
+    border-top: 0.5px solid var(--border);
+    margin: 1.25rem 0;
+  }
+
+  .recommendation-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .rec-btn {
+    flex: 1;
+    min-width: 140px;
+    padding: 10px 14px;
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    font-size: 13px;
+    cursor: pointer;
+    text-align: center;
+    color: var(--text-2);
+    transition: all 0.15s;
+  }
+
+  .rec-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .rec-btn.selected-avanzar { background: var(--success-light); border-color: var(--success); color: var(--success); font-weight: 500; }
+  .rec-btn.selected-reservas { background: var(--warn-light); border-color: var(--warn); color: var(--warn); font-weight: 500; }
+  .rec-btn.selected-no { background: var(--danger-light); border-color: var(--danger); color: var(--danger); font-weight: 500; }
+
+  .score-summary {
+    background: var(--accent-light);
+    border: 0.5px solid var(--accent-mid);
+    border-radius: var(--r-md);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .score-big {
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .score-label { font-size: 13px; color: var(--text-2); }
+
+  .hidden { display: none; }
+
+  .prose { font-size: 14px; line-height: 1.75; color: var(--text); }
+  .prose strong { font-weight: 500; }
+
+  .action-row {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 600px) {
+    main { padding: 1rem; }
+    header { padding: 0 1rem; }
+    .phase-tabs { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">IM</div>
+    Interview Tool — Marketing
+  </div>
+  <div class="phase-tabs">
+    <button class="phase-tab active" id="tab-1" onclick="goToPhase(1)">1. Preparación</button>
+    <button class="phase-tab" id="tab-2" onclick="goToPhase(2)" disabled>2. Evaluación</button>
+    <button class="phase-tab" id="tab-3" onclick="goToPhase(3)" disabled>3. Scorecard</button>
+    <button class="phase-tab" id="tab-4" onclick="goToPhase(4)" disabled>4. Resumen</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- API KEY -->
+  <div class="card" id="apikey-card">
+    <div class="card-title">Configuración</div>
+    <div class="label">API Key de Anthropic</div>
+    <div class="row-center">
+      <input type="text" id="apikey-input" placeholder="sk-ant-..." style="flex:1;" />
+      <button class="btn-primary" onclick="saveKey()">Guardar</button>
+    </div>
+    <p style="font-size:12px; color:var(--text-3); margin-top:8px;">La clave se guarda solo en esta sesión y nunca se envía a ningún servidor propio.</p>
+  </div>
+
+  <!-- FASE 1 -->
+  <div id="phase-1">
+    <div class="card">
+      <div class="card-title">Datos del candidato</div>
+      <div class="row" style="gap:12px; margin-bottom:12px;">
+        <div style="flex:1; min-width:180px;">
+          <div class="label">Nombre</div>
+          <input type="text" id="cand-name" placeholder="ej. Laura Gómez" />
+        </div>
+        <div style="flex:1; min-width:180px;">
+          <div class="label">Cargo al que aplica</div>
+          <input type="text" id="cand-role" placeholder="ej. Marketing Manager" />
+        </div>
+      </div>
+      <div class="label">CV / Resumen del candidato</div>
+      <textarea id="cv-input" rows="9" placeholder="Pega aquí el CV, LinkedIn o un resumen de la trayectoria del candidato..."></textarea>
+      <div class="action-row">
+        <button class="btn-primary" id="btn-generar" onclick="generarPreguntas()">
+          <span>Generar preguntas</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="card hidden" id="preguntas-card">
+      <div class="card-title">Análisis y preguntas sugeridas</div>
+      <div class="output-box" id="preguntas-output"></div>
+      <div class="action-row">
+        <button class="btn-primary" onclick="goToPhase(2)">Continuar a evaluación →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 2 -->
+  <div id="phase-2" class="hidden">
+    <div class="card">
+      <div class="card-title">Respuestas del candidato</div>
+      <p class="prose" style="margin-bottom:1rem; font-size:13px; color:var(--text-2);">Pega las notas, transcripción o resumen libre de cómo respondió el candidato durante la entrevista.</p>
+      <textarea id="respuestas-input" rows="10" placeholder="Ej: Pregunta sobre logro más importante → el candidato mencionó que lideró una campaña de awareness que aumentó el tráfico orgánico un 40%. Habló con claridad pero la estructura fue un poco desordenada..."></textarea>
+      <div class="label" style="margin-top:1rem;">Tus observaciones personales (opcional)</div>
+      <textarea id="thoughts-input" rows="3" placeholder="Agrega aquí tus impresiones personales, dudas o señales que notaste..."></textarea>
+      <div class="action-row">
+        <button class="btn-primary" id="btn-evaluar" onclick="evaluarRespuestas()">Evaluar respuestas</button>
+      </div>
+    </div>
+
+    <div class="card hidden" id="evaluacion-card">
+      <div class="card-title">Evaluación IA</div>
+      <div class="output-box" id="evaluacion-output"></div>
+      <div class="action-row">
+        <button class="btn-primary" onclick="goToPhase(3)">Ir al scorecard →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 3 — SCORECARD -->
+  <div id="phase-3" class="hidden">
+    <div class="card">
+      <div class="card-title">Scorecard</div>
+
+      <div class="competencia-grid" id="scorecard-grid">
+        <!-- generado por JS -->
+      </div>
+
+      <hr class="section-divider">
+
+      <div class="label">Fortalezas destacadas</div>
+      <textarea id="fortalezas-input" rows="3" placeholder="¿Qué hizo muy bien este candidato?"></textarea>
+
+      <div class="label" style="margin-top:12px;">Áreas de preocupación</div>
+      <textarea id="preocupaciones-input" rows="3" placeholder="¿Qué generó dudas o banderas rojas?"></textarea>
+
+      <hr class="section-divider">
+
+      <div class="label">Recomendación</div>
+      <div class="recommendation-row">
+        <button class="rec-btn" id="rec-avanzar" onclick="setRec('avanzar')">✓ Avanzar con fuerza</button>
+        <button class="rec-btn" id="rec-reservas" onclick="setRec('reservas')">~ Avanzar con reservas</button>
+        <button class="rec-btn" id="rec-no" onclick="setRec('no')">✕ No continuar</button>
+      </div>
+
+      <div id="score-preview" class="score-summary" style="margin-top:1.25rem; display:none;">
+        <div>
+          <div class="score-big" id="score-num">—</div>
+          <div class="score-label">promedio / 5</div>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:13px; font-weight:500; color:var(--accent);" id="score-rec-text">—</div>
+          <div style="font-size:12px; color:var(--text-2); margin-top:2px;" id="score-rec-badge"></div>
+        </div>
+      </div>
+
+      <div class="action-row" style="margin-top:1.25rem;">
+        <button class="btn-primary" id="btn-resumen" onclick="generarResumen()">Generar resumen ejecutivo →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FASE 4 — RESUMEN EJECUTIVO -->
+  <div id="phase-4" class="hidden">
+    <div class="card">
+      <div class="card-title">Resumen ejecutivo</div>
+      <div class="output-box" id="resumen-output"></div>
+      <div class="action-row" style="margin-top:1rem;">
+        <button class="btn-secondary" onclick="copyResumen()">Copiar texto</button>
+        <button class="btn-primary" onclick="nuevaEntrevista()">Nueva entrevista</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const COMPETENCIAS = [
+  { key: 'thinking', label: 'Thinking' },
+  { key: 'communication', label: 'Communication Skills' },
+  { key: 'structure', label: 'Structure' },
+  { key: 'execution', label: 'Perfect Execution' },
+  { key: 'cultural', label: 'Cultural Fit' },
+  { key: 'collaboration', label: 'Win-Win Collaboration' },
+];
+
+const SYSTEM_PROMPT = `Eres un asistente especializado en entrevistas de marketing. 
+
+Evalúas candidatos en 6 competencias core:
+- Thinking: Razonamiento estructurado, análisis de problemas, profundidad de pensamiento
+- Communication Skills: Claridad, concisión, capacidad de persuadir y adaptar el mensaje
+- Structure: Orden lógico en respuestas, frameworks, priorización
+- Perfect Execution: Atención al detalle, seguimiento, orientación a resultados
+- Cultural Fit: Valores alineados, actitud, forma de relacionarse
+- Win-Win Collaboration: Trabajo en equipo, empatía, búsqueda de soluciones conjuntas
+
+Siempre respondes en español. Tono profesional pero directo. Nunca inventas información del candidato.`;
+
+let apiKey = '';
+let state = {
+  candidato: '', cargo: '', cv: '',
+  preguntas: '', respuestas: '', thoughts: '', evaluacion: '',
+  scores: {}, notas: {},
+  fortalezas: '', preocupaciones: '', recomendacion: '',
+  resumen: ''
+};
+
+function saveKey() {
+  const val = document.getElementById('apikey-input').value.trim();
+  if (!val.startsWith('sk-')) { alert('Ingresa una API key válida (comienza con sk-)'); return; }
+  apiKey = val;
+  document.getElementById('apikey-card').style.display = 'none';
+}
+
+function goToPhase(n) {
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById('phase-' + i).classList.toggle('hidden', i !== n);
+    const tab = document.getElementById('tab-' + i);
+    if (tab) tab.classList.toggle('active', i === n);
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function callClaude(messages, onChunk) {
+  if (!apiKey) { alert('Por favor ingresa tu API key primero.'); return null; }
+
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 2000,
+      system: SYSTEM_PROMPT,
+      stream: true,
+      messages
+    })
+  });
+
+  if (!resp.ok) {
+    const err = await resp.json();
+    throw new Error(err.error?.message || 'Error en la API');
+  }
+
+  const reader = resp.body.getReader();
+  const decoder = new TextDecoder();
+  let full = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    const chunk = decoder.decode(value);
+    const lines = chunk.split('\n');
+    for (const line of lines) {
+      if (line.startsWith('data: ')) {
+        try {
+          const data = JSON.parse(line.slice(6));
+          if (data.type === 'content_block_delta' && data.delta?.text) {
+            full += data.delta.text;
+            if (onChunk) onChunk(full);
+          }
+        } catch {}
+      }
+    }
+  }
+  return full;
+}
+
+async function generarPreguntas() {
+  const name = document.getElementById('cand-name').value.trim();
+  const role = document.getElementById('cand-role').value.trim();
+  const cv = document.getElementById('cv-input').value.trim();
+
+  if (!cv) { alert('Por favor ingresa el CV o resumen del candidato.'); return; }
+
+  state.candidato = name || 'Candidato';
+  state.cargo = role || 'Rol de Marketing';
+  state.cv = cv;
+
+  const btn = document.getElementById('btn-generar');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>';
+
+  const card = document.getElementById('preguntas-card');
+  const output = document.getElementById('preguntas-output');
+  card.classList.remove('hidden');
+  output.classList.add('streaming');
+  output.innerHTML = '<div class="loader"><span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span></div>';
+
+  const prompt = `Candidato: ${state.candidato}
+Cargo: ${state.cargo}
+CV: ${cv}
+
+Realiza las siguientes tareas:
+
+1. Analiza el CV brevemente (3–5 bullets con observaciones clave)
+2. Genera 10–12 preguntas de entrevista personalizadas divididas en:
+   - Trayectoria y experiencia (3–4 preguntas basadas en su CV específico)
+   - Marketing técnico (3–4 preguntas según el cargo)
+   - Competencias (3–4 preguntas, una por competencia core priorizando las que el CV no deje claras)
+3. Para cada pregunta incluye: Evalúa: [aspecto] | Escuchar: [señal positiva]
+
+Formato en markdown limpio.`;
+
+  try {
+    const text = await callClaude([{ role: 'user', content: prompt }], (partial) => {
+      output.textContent = partial;
+    });
+    state.preguntas = text;
+    output.classList.remove('streaming');
+    document.getElementById('tab-2').disabled = false;
+  } catch (e) {
+    output.textContent = 'Error: ' + e.message;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<span>Generar preguntas</span>';
+}
+
+async function evaluarRespuestas() {
+  const resp = document.getElementById('respuestas-input').value.trim();
+  const thoughts = document.getElementById('thoughts-input').value.trim();
+
+  if (!resp) { alert('Por favor ingresa las respuestas del candidato.'); return; }
+
+  state.respuestas = resp;
+  state.thoughts = thoughts;
+
+  const btn = document.getElementById('btn-evaluar');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>';
+
+  const card = document.getElementById('evaluacion-card');
+  const output = document.getElementById('evaluacion-output');
+  card.classList.remove('hidden');
+  output.classList.add('streaming');
+  output.innerHTML = '<div class="loader"><span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span></div>';
+
+  const prompt = `Candidato: ${state.candidato} | Cargo: ${state.cargo}
+
+Preguntas generadas y contexto del CV:
+${state.preguntas}
+
+Respuestas del candidato durante la entrevista:
+${resp}
+
+${thoughts ? `Observaciones del entrevistador: ${thoughts}` : ''}
+
+Evalúa las respuestas del candidato frente a las 6 competencias core (Thinking, Communication Skills, Structure, Perfect Execution, Cultural Fit, Win-Win Collaboration). 
+
+Para cada competencia:
+- Indica qué evidencia encontraste en sus respuestas
+- Señala fortalezas observadas
+- Señala banderas rojas si las hay
+
+Cierra con un resumen de 3–4 bullets: las 2 fortalezas principales y las 2 áreas de mayor riesgo.`;
+
+  try {
+    const text = await callClaude([{ role: 'user', content: prompt }], (partial) => {
+      output.textContent = partial;
+    });
+    state.evaluacion = text;
+    output.classList.remove('streaming');
+    document.getElementById('tab-3').disabled = false;
+    buildScorecard();
+  } catch (e) {
+    output.textContent = 'Error: ' + e.message;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = 'Evaluar respuestas';
+}
+
+function buildScorecard() {
+  const grid = document.getElementById('scorecard-grid');
+  grid.innerHTML = '';
+
+  COMPETENCIAS.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'comp-item';
+
+    const stars = [1,2,3,4,5].map(n =>
+      `<div class="star" id="star-${c.key}-${n}" onclick="setScore('${c.key}', ${n})">${n}</div>`
+    ).join('');
+
+    div.innerHTML = `
+      <div class="comp-label">${c.label}</div>
+      <div class="star-row">${stars}</div>
+      <textarea class="comp-notes" id="notes-${c.key}" placeholder="Notas..."></textarea>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+function setScore(key, val) {
+  state.scores[key] = val;
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById(`star-${key}-${i}`);
+    if (el) el.classList.toggle('active', i <= val);
+  }
+  updateScorePreview();
+}
+
+function updateScorePreview() {
+  const vals = COMPETENCIAS.map(c => state.scores[c.key]).filter(Boolean);
+  if (vals.length === 0) return;
+  const avg = vals.reduce((a,b) => a+b, 0) / vals.length;
+  document.getElementById('score-num').textContent = avg.toFixed(1);
+  document.getElementById('score-preview').style.display = 'flex';
+}
+
+function setRec(val) {
+  state.recomendacion = val;
+  ['avanzar','reservas','no'].forEach(r => {
+    document.getElementById('rec-' + r).className = 'rec-btn' + (r === val ? ' selected-' + r : '');
+  });
+  const texts = { avanzar: '✓ Avanzar con fuerza', reservas: '~ Avanzar con reservas', no: '✕ No continuar' };
+  document.getElementById('score-rec-text').textContent = texts[val] || '';
+  updateScorePreview();
+}
+
+async function generarResumen() {
+  COMPETENCIAS.forEach(c => {
+    const noteEl = document.getElementById('notes-' + c.key);
+    if (noteEl) state.notas[c.key] = noteEl.value;
+  });
+  state.fortalezas = document.getElementById('fortalezas-input').value;
+  state.preocupaciones = document.getElementById('preocupaciones-input').value;
+
+  const btn = document.getElementById('btn-resumen');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>';
+
+  goToPhase(4);
+  document.getElementById('tab-4').disabled = false;
+
+  const output = document.getElementById('resumen-output');
+  output.classList.add('streaming');
+  output.innerHTML = '<div class="loader"><span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span></div>';
+
+  const vals = COMPETENCIAS.map(c => state.scores[c.key]).filter(Boolean);
+  const avg = vals.length ? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1) : 'N/D';
+
+  const scoreLines = COMPETENCIAS.map(c =>
+    `${c.label}: ${state.scores[c.key] || 'N/D'}/5 — ${state.notas[c.key] || ''}`
+  ).join('\n');
+
+  const recText = { avanzar: 'Avanzar con fuerza', reservas: 'Avanzar con reservas', no: 'No continuar' }[state.recomendacion] || 'Sin definir';
+
+  const prompt = `Genera un resumen ejecutivo profesional para compartir con el equipo sobre este candidato.
+
+Candidato: ${state.candidato}
+Cargo: ${state.cargo}
+Puntaje promedio: ${avg}/5
+Recomendación: ${recText}
+
+Scorecard:
+${scoreLines}
+
+Fortalezas: ${state.fortalezas || 'Ver evaluación'}
+Áreas de preocupación: ${state.preocupaciones || 'Ver evaluación'}
+
+Evaluación IA:
+${state.evaluacion}
+
+${state.thoughts ? `Thoughts del entrevistador: ${state.thoughts}` : ''}
+
+Escribe un párrafo de 5–7 oraciones en español que pueda compartirse con otras personas del equipo sin contexto adicional. Incluye: quién es el candidato, su experiencia más relevante, sus fortalezas principales, sus gaps o riesgos, y la recomendación final con justificación breve.`;
+
+  try {
+    const text = await callClaude([{ role: 'user', content: prompt }], (partial) => {
+      output.textContent = partial;
+    });
+    state.resumen = text;
+    output.classList.remove('streaming');
+  } catch (e) {
+    output.textContent = 'Error: ' + e.message;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = 'Generar resumen ejecutivo →';
+}
+
+function copyResumen() {
+  const text = document.getElementById('resumen-output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    alert('Resumen copiado al portapapeles.');
+  });
+}
+
+function nuevaEntrevista() {
+  if (!confirm('¿Comenzar una nueva entrevista? Se perderán los datos actuales.')) return;
+  location.reload();
+}
+</script>
+</body>
+</html>
